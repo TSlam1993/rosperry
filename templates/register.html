@@ -1,0 +1,50 @@
+{{ define "sign" }}
+
+{{ template "header" }}
+
+<div class="add-form-wrapper grid grid-form">
+    {{ if .SignType == "register" }}
+    <form role="form" method="POST" action="/signup">
+        <h2> Registration </h2>
+        {{ if .Register == "alreadyExist" }}
+        <h3> User with that username already exists!</h3>
+        {{ end }}
+        <!--<input type="hidden" name="id" value="{{.Id}}" />-->
+        <div class="form-group">
+            <label>Title</label>
+            <input type="text" class="form-control" id="username" name="username" value="{{.Username}}" required/>
+        </div>
+        <div class="form-group">
+            <label>Price</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{.Email}}" required/>
+        </div>
+        <div class="form-group">
+            <label>Price</label>
+            <input type="email" class="form-control" id="password" name="password" required/>
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Submit</button>
+    </form>
+    {{ else if .SignType == "login" }}
+    <form role="form" method="POST" action="/signin">
+        <h2> Registration </h2>
+        {{ if .Register == "success" }}
+        <h3> You have successfully registered, you can log in now!</h3>
+        {{ end }}
+        <!--<input type="hidden" name="id" value="{{.Id}}" />-->
+        <div class="form-group">
+            <label>Title</label>
+            <input type="text" class="form-control" id="username" name="username" value="{{.Username}}" required/>
+        </div>
+        <div class="form-group">
+            <label>Price</label>
+            <input type="email" class="form-control" id="password" name="password" required/>
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Submit</button>
+    </form>
+    {{ end }}
+</div>
+
+
+{{ template "footer" }}
+
+{{ end }}
