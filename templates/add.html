@@ -1,0 +1,28 @@
+{{ define "write" }}
+
+{{ template "header" }}
+
+<div class="add-form-wrapper grid grid-form">
+    <div class="hide"></div>
+    <form role="form" method="POST" action="/saveProduct">
+        <h2 class="form-title"> Adding Product </h2>
+        <input type="hidden" name="id" value="{{.Id}}" />
+        <div class="form-group">
+            <label>Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{.Title}}" required/>
+        </div>
+        <div class="form-group">
+            <label>Price</label>
+            <input type="number" class="form-control" id="price" name="price" value="{{.Price}}" required/>$
+        </div>
+        <button type="submit" class="form-button mborder">Submit</button>
+        {{ if .Id }}
+        <a href="/delete?id={{.Id}}">Delete</a>
+        {{ end }}
+    </form>
+</div>
+
+
+{{ template "footer" }}
+
+{{ end }}
