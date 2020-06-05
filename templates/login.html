@@ -1,47 +1,40 @@
-{{ define "sign" }}
+{{ define "login" }}
 
 {{ template "header" }}
 
 <div class="add-form-wrapper grid grid-form">
-    {{ if .SignType == "register" }}
-    <form role="form" method="POST" action="/signup">
-        <h2> Registration </h2>
-        {{ if .Register == "alreadyExist" }}
-        <h3> User with that username already exists!</h3>
-        {{ end }}
-        <!--<input type="hidden" name="id" value="{{.Id}}" />-->
-        <div class="form-group">
-            <label>Title</label>
-            <input type="text" class="form-control" id="username" name="username" value="{{.Username}}" required/>
-        </div>
-        <div class="form-group">
-            <label>Price</label>
-            <input type="email" class="form-control" id="email" name="email" value="{{.Email}}" required/>
-        </div>
-        <div class="form-group">
-            <label>Price</label>
-            <input type="email" class="form-control" id="password" name="password" required/>
-        </div>
-        <button type="submit" class="btn btn-primary mb-2">Submit</button>
-    </form>
-    {{ else if .SignType == "login" }}
+    <div></div>
     <form role="form" method="POST" action="/signin">
-        <h2> Registration </h2>
-        {{ if .Register == "success" }}
-        <h3> You have successfully registered, you can log in now!</h3>
-        {{ end }}
-        <!--<input type="hidden" name="id" value="{{.Id}}" />-->
+        <h2 class="form-title"> Sign In </h2>
+
+        {{ if eq (.Message) ("notfound") }}
+            <h3 class="form-message form-message-alert">
+                User with this name does not exist
+            </h3>
+        {{ else if eq (.Message) ("wrongpassword") }}
+            <h3 class="form-message form-message-alert">
+                Incorrect password
+            </h3>
+        {{ else if eq (.Message) ("registersuccess") }}
+            <h3 class="form-message form-message-alert">
+                You have created an account, now you can login using its username and password!
+            </h3>
+        {{end}}
+
         <div class="form-group">
-            <label>Title</label>
+            <label>Username</label>
             <input type="text" class="form-control" id="username" name="username" value="{{.Username}}" required/>
         </div>
         <div class="form-group">
-            <label>Price</label>
-            <input type="email" class="form-control" id="password" name="password" required/>
+            <label>Password</label>
+            <input type="password" class="form-control" id="password" name="password" required/>
         </div>
-        <button type="submit" class="btn btn-primary mb-2">Submit</button>
+        <button type="submit" class="form-button mborder float-left">Submit</button>
+
+        <div class="form-switch float-right clear mborder">
+            Don't have an account? <a href="/register" >Sign Up</a>
+        </div>
     </form>
-    {{ end }}
 </div>
 
 

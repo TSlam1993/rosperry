@@ -1,0 +1,104 @@
+body {
+    background-image: url(https://i.imgur.com/DS40yfd.jpg);
+    font-size: 16px;
+}
+
+.product-wrapper {
+    padding: 10px;
+    border: solid;
+    text-align: center;
+    min-height: 200px;
+}
+
+.product {
+    margin-top: 30px;
+}
+
+.grid {
+    display: grid;
+    grid-template-rows: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    grid-gap: 2vw;
+    padding: 25px;
+}
+
+.grid-form {
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-top: 40px;
+}
+
+@media (max-width: 900px) {
+    .grid-form {
+        grid-template-columns: 50px 1fr 50px;
+    }
+}
+
+.form-title {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.mborder {
+    border: solid 0.5px;
+    border-radius: 5px;
+}
+
+.form-switch {
+    padding: 10px 20px;
+}
+
+.form-button {
+    padding: 10px 20px;
+    letter-spacing: 1.5px;
+    background: none;
+    font-weight: bold;
+    font-size: 1.3em;
+    margin-top: 20px;
+}
+
+.form-message {
+    margin: 20px 0;
+    border: solid black 0.5px;
+    padding: 20px 20px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.form-message-alert {
+    color: red;
+}
+
+@media (min-width: 1630px) {
+    .product-wrapper {
+        max-width: 500px;
+        margin: auto;
+        min-width: 500px
+    }
+}
+
+.navbar {
+    display: block;
+}
+
+.navbar-toggler {
+    position: fixed;
+    right: 20px;
+    top: 10px;
+}
+
+.navbar-collapse {
+    font-size: 1.4em;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
+.clear {
+    clear: both;
+}

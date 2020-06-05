@@ -3,9 +3,9 @@ package models
 type User struct {
 	Username string
 	Email string
-	Password string
+	Password []byte
 }
 
-func NewUser(username string, email string, password string) *User {
+func NewUser(username string, email string, password []byte) *User {
 	return &User{username, email, password}
 }

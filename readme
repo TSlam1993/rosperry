@@ -1,0 +1,8 @@
+Installation:
+1. System needs mongodb installed and running
+2. Install go packages:
+go get golang.org/x/crypto/bcrypt
+go get github.com/satori/go.uuid
+go get github.com/gomodule/redigo/redis
+
+
