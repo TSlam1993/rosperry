@@ -21,18 +21,21 @@ func IndexHandler(w http.ResponseWriter, r *http.Request, productsCollection *mg
 
 	products := []models.Product{}
 	for _, prod := range productDocuments {
-		product := models.Product{prod.Id, prod.Title, prod.Price}
+		product := models.Product{prod.Id, prod.Title, prod.Price, prod.Owner}
 		products = append(products, product)
 	}
 
 	var headerTemplate string
+	var indexTemplate string
 	if user != " " {
 		headerTemplate = "templates/header_authorized.html"
+		indexTemplate = "templates/index_authorized.html"
 	} else {
 		headerTemplate = "templates/header_unauthorized.html"
+		indexTemplate = "templates/index_unauthorized.html"
 	}
 
-	t, err := template.ParseFiles("templates/index.html", headerTemplate, "templates/footer.html")
+	t, err := template.ParseFiles(indexTemplate, headerTemplate, "templates/footer.html")
 	if err != nil {
 		fmt.Println(w, err.Error())
 		return

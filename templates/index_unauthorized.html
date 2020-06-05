@@ -1,0 +1,18 @@
+{{ define "index" }}
+
+{{ template "header" }}
+
+<div class="grid">
+    {{ range $key, $value := . }}
+    <div class="product-wrapper">
+        <div class="product">
+            <h1><a href="/show?id={{ $value.Id }}">{{ $value.Title }}</a></h1>
+            <h2> Цена: {{ $value.Price }}$</h2>
+        </div>
+    </div>
+    {{ end }}
+</div>
+
+{{ template "footer" }}
+
+{{ end }}

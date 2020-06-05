@@ -22,7 +22,12 @@ type signParams struct {
 
 const hashCost = 8
 
-func LoginFormHandler(w http.ResponseWriter, r *http.Request) {
+func LoginFormHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
+	user := ValidateAuthentication(r, cache)
+	if user != " " {
+		http.Redirect(w, r, "/", 302)
+	}
+
 	t, err := template.ParseFiles("templates/login.html", "templates/header_unauthorized.html", "templates/footer.html")
 
 	if err != nil {
@@ -41,7 +46,12 @@ func LoginFormHandler(w http.ResponseWriter, r *http.Request) {
 	t.ExecuteTemplate(w, "login", params)
 }
 
-func RegisterFormHandler(w http.ResponseWriter, r *http.Request) {
+func RegisterFormHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
+	user := ValidateAuthentication(r, cache)
+	if user != " " {
+		http.Redirect(w, r, "/", 302)
+	}
+
 	t, err := template.ParseFiles("templates/register.html", "templates/header_unauthorized.html", "templates/footer.html")
 
 	if err != nil {
@@ -286,7 +296,6 @@ func RefreshHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 func ValidateAuthentication(r *http.Request, cache redis.Conn) string {
 	c, err := r.Cookie("auth_token")
 	if err != nil {
-		fmt.Println(err)
 		return " "
 	}
 
@@ -294,7 +303,6 @@ func ValidateAuthentication(r *http.Request, cache redis.Conn) string {
 
 	c, err = r.Cookie("username")
 	if err != nil {
-		fmt.Println(err)
 		return " "
 	}
 

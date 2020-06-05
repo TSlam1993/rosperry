@@ -36,7 +36,7 @@ body {
 
 .form-title {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 65px;
 }
 
 .mborder {
@@ -48,13 +48,38 @@ body {
     padding: 10px 20px;
 }
 
+.product-form-label {
+    min-width: 15%;
+    font-size: 1.3rem;
+}
+
+.product-form-input {
+    width: 80%;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+@media (max-width: 520px) {
+    .product-form-input {
+        margin-right: 0px;
+    }
+}
+
+.form-delete-button {
+    float: right;
+    clear: both;
+    margin-right: 2%;
+    border: none;
+    color: red;
+}
+
 .form-button {
     padding: 10px 20px;
     letter-spacing: 1.5px;
     background: none;
     font-weight: bold;
     font-size: 1.3em;
-    margin-top: 20px;
+    margin-top: 50px;
 }
 
 .form-message {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"rosperry/handlers"
+	//"rosperry/utils"
 
 	"gopkg.in/mgo.v2"
 	"github.com/gomodule/redigo/redis"
@@ -26,7 +27,7 @@ func main() {
 	usersCollection = session.DB("test").C("users")
 
 	//utils.PrintCollection(usersCollection)
-	//utils.DropCollection(usersCollection)
+	//utils.DropCollection(productsCollection)
 
 	assetsHandle := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/")))
 
@@ -34,18 +35,27 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
 		handlers.IndexHandler(w, r, productsCollection, cache)
 	})
-	http.HandleFunc("/add", handlers.AddHandler)
-	http.HandleFunc("/edit", func(w http.ResponseWriter, r *http.Request){
-		handlers.EditHandler(w, r, productsCollection)
+	http.HandleFunc("/add", func(w http.ResponseWriter, r *http.Request) {
+		handlers.AddHandler(w, r, cache)
 	})
-	http.HandleFunc("/saveProduct", func(w http.ResponseWriter, r *http.Request){
-		handlers.SaveProductHandler(w, r, productsCollection)
+	http.HandleFunc("/show", func(w http.ResponseWriter, r *http.Request) {
+		handlers.ShowHandler(w, r, productsCollection, cache)
+	})
+	http.HandleFunc("/edit", func(w http.ResponseWriter, r *http.Request) {
+		handlers.EditHandler(w, r, productsCollection, cache)
+	})
+	http.HandleFunc("/saveProduct", func(w http.ResponseWriter, r *http.Request) {
+		handlers.SaveProductHandler(w, r, productsCollection, cache)
 	})
 	http.HandleFunc("/delete", func(w http.ResponseWriter, r *http.Request){
-		handlers.DeleteHandler(w, r, productsCollection)
+		handlers.DeleteHandler(w, r, productsCollection, cache)
 	})
-	http.HandleFunc("/register", handlers.RegisterFormHandler)
-	http.HandleFunc("/login", handlers.LoginFormHandler)
+	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
+		handlers.RegisterFormHandler(w, r, cache)
+	})
+	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		handlers.LoginFormHandler(w, r, cache)
+	})
 	http.HandleFunc("/signup", func(w http.ResponseWriter, r *http.Request) {
 		handlers.SignUpHandler(w, r, usersCollection)
 	})
@@ -79,5 +89,6 @@ func initCache() {
 	if err != nil {
 		panic(err)
 	}
+
 	cache = conn
 }
