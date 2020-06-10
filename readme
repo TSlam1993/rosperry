@@ -4,5 +4,6 @@ Installation:
 go get golang.org/x/crypto/bcrypt
 go get github.com/satori/go.uuid
 go get github.com/gomodule/redigo/redis
+go get go.mongodb.org/mongo-driver/bson
 
 

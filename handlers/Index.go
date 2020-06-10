@@ -5,12 +5,22 @@ import (
 	"net/http"
 	"html/template"
 
-	"rosperry/models"
+	//"rosperry/models"
 	"rosperry/db/documents"
 
 	"gopkg.in/mgo.v2"
 	"github.com/gomodule/redigo/redis"
+	//"go.mongodb.org/mongo-driver/bson"
 )
+
+const headerAuthorizedTemplate = "templates/landing/header_authorized.html"
+const headerUnauthorizedTemplate = "templates/landing/header_unauthorized.html"
+const footerTemplate = "templates/landing/footer.html"
+const loginTemplate = "templates/authorization/login.html"
+const registerTemplate = "templates/authorization/register.html"
+const addTemplate = "templates/product/add.html"
+const showTemplate = "templates/product/show.html"
+const indexTemplate = "templates/landing/index_authorized.html"
 
 func IndexHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
 	RefreshHandler(w, r, cache)
@@ -18,27 +28,30 @@ func IndexHandler(w http.ResponseWriter, r *http.Request, productsCollection *mg
 
 	productDocuments := []documents.ProductDocument{}
 	productsCollection.Find(nil).All(&productDocuments)
+	fmt.Println(productDocuments)
 
-	products := []models.Product{}
+	products := []documents.TemplateProductDocument{}
 	for _, prod := range productDocuments {
-		product := models.Product{prod.Id, prod.Title, prod.Price, prod.Owner}
+		product := documents.TemplateProductDocument{prod.Id, prod.Title, prod.Price,
+			prod.Owner, prod.Type,
+			prod.CreatedAt.Format("01-02-2006 15:04"),
+			prod.UpdatedAt.Format("01-02-2006 15:04"),
+			""}
 		products = append(products, product)
 	}
 
-	var headerTemplate string
-	var indexTemplate string
-	if user != " " {
-		headerTemplate = "templates/header_authorized.html"
-		indexTemplate = "templates/index_authorized.html"
-	} else {
-		headerTemplate = "templates/header_unauthorized.html"
-		indexTemplate = "templates/index_unauthorized.html"
-	}
 
-	t, err := template.ParseFiles(indexTemplate, headerTemplate, "templates/footer.html")
+	var headerTemplate string
+	if user != " " {
+		headerTemplate = headerAuthorizedTemplate
+	} else {
+		headerTemplate = headerUnauthorizedTemplate
+	}
+	fmt.Println(headerTemplate)
+
+	t, err := template.ParseFiles(indexTemplate, headerTemplate, footerTemplate)
 	if err != nil {
-		fmt.Println(w, err.Error())
-		return
+		panic(err)
 	}
 
 	t.ExecuteTemplate(w, "index", products)

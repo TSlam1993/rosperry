@@ -1,0 +1,20 @@
+{{ define "show" }}
+
+{{ template "header" }}
+
+<div class="grid">
+    <div class="product-wrapper">
+        <div class="product">
+            <h1>{{ .Title }}</h1>
+            <h2> Brand: {{ .Owner }}</h2>
+            <h2> Price: {{ .Price }}$</h2>
+            <h2> Type: {{ .Type}} </h2>
+            <h2> Date of Publishing: {{ .CreatedAt}} </h2>
+        </div>
+    </div>
+</div>
+
+
+{{ template "footer" }}
+
+{{ end }}

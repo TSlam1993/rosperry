@@ -26,13 +26,12 @@ func LoginFormHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) 
 	user := ValidateAuthentication(r, cache)
 	if user != " " {
 		http.Redirect(w, r, "/", 302)
+		return
 	}
 
-	t, err := template.ParseFiles("templates/login.html", "templates/header_unauthorized.html", "templates/footer.html")
-
+	t, err := template.ParseFiles(loginTemplate, headerUnauthorizedTemplate, footerTemplate)
 	if err != nil {
-		fmt.Println(w, err.Error())
-		return
+		panic(err)
 	}
 
 	params := signParams{}
@@ -50,13 +49,12 @@ func RegisterFormHandler(w http.ResponseWriter, r *http.Request, cache redis.Con
 	user := ValidateAuthentication(r, cache)
 	if user != " " {
 		http.Redirect(w, r, "/", 302)
+		return
 	}
 
-	t, err := template.ParseFiles("templates/register.html", "templates/header_unauthorized.html", "templates/footer.html")
-
+	t, err := template.ParseFiles(registerTemplate, headerUnauthorizedTemplate, footerTemplate)
 	if err != nil {
-		fmt.Println(w, err.Error())
-		return
+		panic(err)
 	}
 
 	params := signParams{}
@@ -82,9 +80,11 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.
 	if err != nil {
 		userDocuments := []documents.UserDocument{}
 		usersCollection.Find(nil).All(&userDocuments)
+
 		for _, doc := range userDocuments {
 			if doc.Email == email {
 				http.Redirect(w, r, "/register?message=emailalreadyexists", 302)
+				return
 			}
 		}
 
@@ -94,6 +94,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.
 		}
 
 		http.Redirect(w, r, "/login?message=registersuccess", 302)
+		return
 	}
 
 	http.Redirect(w, r, "/register?message=namealreadyexists", 302)
@@ -108,11 +109,13 @@ func SignInHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.
 	err := usersCollection.FindId(username).One(&userDocument)
 	if err != nil {
 		http.Redirect(w, r, "/login?message=notfound", 302)
+		return
 	}
 
 	err = bcrypt.CompareHashAndPassword(userDocument.Password, []byte(password))
 	if err != nil {
 		http.Redirect(w, r, "/login?message=wrongpassword", 302)
+		return
 	}
 
 	authToken := uuid.Must(uuid.NewV4()).String()
@@ -289,8 +292,6 @@ func RefreshHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 		Value: newAuthToken,
 		Expires: time.Now().Add(120 * time.Second),
 	})
-
-	fmt.Println("DATA: ", refreshToken, newAuthToken, fmt.Sprintf("%s", refreshTokenUsername), cookieUsername)
 }
 
 func ValidateAuthentication(r *http.Request, cache redis.Conn) string {

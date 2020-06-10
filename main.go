@@ -10,10 +10,12 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-var productsCollection *mgo.Collection
-var usersCollection *mgo.Collection
-var session *mgo.Session
-var cache redis.Conn
+var (
+	productsCollection *mgo.Collection
+	usersCollection *mgo.Collection
+	session *mgo.Session
+	cache redis.Conn
+)
 
 func main() {
 	fmt.Println("Listening on port :3000")
@@ -26,7 +28,8 @@ func main() {
 	productsCollection = session.DB("test").C("products")
 	usersCollection = session.DB("test").C("users")
 
-	//utils.PrintCollection(usersCollection)
+	//utils.PrintProductCollection(productsCollection)
+	//utils.PrintUserCollection(usersCollection)
 	//utils.DropCollection(productsCollection)
 
 	assetsHandle := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/")))

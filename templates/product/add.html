@@ -6,10 +6,26 @@
     <div class="hide"></div>
     <form role="form" method="POST" action="/saveProduct">
         <h2 class="form-title"> Adding Product </h2>
+
+        {{ if eq (.Message) ("alreadyexists") }}
+        <h3 class="form-message form-message-alert">
+            You already have a product with that name, please choose another
+        </h3>
+        {{end}}
+
+
         <input type="hidden" name="id" value="{{.Id}}" />
         <div class="form-group">
             <label class="product-form-label">Title</label>
             <input type="text" class="form-control product-form-input" id="title" name="title" value="{{.Title}}" required/>
+        </div>
+        <div class="form-group">
+            <label class="product-form-label">Type</label>
+            <select class="form-control product-form-input" id="type" name="type" required>
+                <option value="good" {{if eq .Type "good"}} selected="selected" {{end}}>Good</option>
+                <option value="service" {{if eq .Type "service"}} selected="selected" {{end}}>Service</option>
+                <option value="proposal" {{if eq .Type "proposal"}} selected="selected" {{end}}>Proposal</option>
+            </select>
         </div>
         <div class="form-group">
             <label class="product-form-label">Price</label>

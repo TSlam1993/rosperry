@@ -17,8 +17,17 @@ func DropCollection(collection *mgo.Collection) {
 	collection.RemoveAll(nil)
 }
 
-func PrintCollection(collection *mgo.Collection) {
+func PrintUserCollection(collection *mgo.Collection) {
 	collectionDocuments := []documents.UserDocument{}
+	collection.Find(nil).All(&collectionDocuments)
+
+	for _, doc := range collectionDocuments {
+		fmt.Println(doc)
+	}
+}
+
+func PrintProductCollection(collection *mgo.Collection) {
+	collectionDocuments := []documents.ProductDocument{}
 	collection.Find(nil).All(&collectionDocuments)
 
 	for _, doc := range collectionDocuments {
