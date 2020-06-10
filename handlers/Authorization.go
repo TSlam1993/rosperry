@@ -156,6 +156,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.
 }
 
 func SignOutHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
+	// TO DO: FIX ERROR WHEN REFRESH TOKEN IS EXPIRED
 	http.SetCookie(w, &http.Cookie{
 		Name: "username",
 		Value: "",
@@ -184,7 +185,6 @@ func SignOutHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 		Value: "",
 		Expires: time.Now(),
 	})
-
 
 	c, err = r.Cookie("auth_token")
 	if err != nil {

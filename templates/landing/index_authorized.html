@@ -6,9 +6,11 @@
     {{ range $key, $value := . }}
     <div class="product-wrapper">
         <div class="product">
-            <h1><a href="/show?id={{ $value.Id }}">{{ $value.Title }}</a></h1>
-            <h2> ({{ $value.Owner }}) </h2>
-            <h2> Price: {{ $value.Price }}$</h2>
+            <h1 class="show-product-title"><a href="/show?id={{ $value.Id }}">{{ $value.Title }}</a></h1>
+            <h2> Brand: {{ .Owner }}</h2>
+            <h2> Price: {{ .Price }}$</h2>
+            <h2> Type: {{ .Type }} </h2>
+            <p class="published"> Published: {{ .CreatedAt}} </p>
         </div>
     </div>
     {{ end }}

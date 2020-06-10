@@ -31,12 +31,16 @@ func IndexHandler(w http.ResponseWriter, r *http.Request, productsCollection *mg
 	fmt.Println(productDocuments)
 
 	products := []documents.TemplateProductDocument{}
+	ownsProduct := false
 	for _, prod := range productDocuments {
+		ownsProduct = false
+		if user == prod.Owner {
+			ownsProduct = true
+		}
 		product := documents.TemplateProductDocument{prod.Id, prod.Title, prod.Price,
 			prod.Owner, prod.Type,
-			prod.CreatedAt.Format("01-02-2006 15:04"),
-			prod.UpdatedAt.Format("01-02-2006 15:04"),
-			""}
+			prod.CreatedAt.Format("01.02.2006"),
+			prod.UpdatedAt.Format("01.02.2006"), "", ownsProduct}
 		products = append(products, product)
 	}
 

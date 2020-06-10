@@ -36,7 +36,6 @@ func AddHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 }
 
 func ShowHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
-	//TO DO: CHECK IF USER OWNS PRODUCT - ADD EDIT AND DELETE BUTTONS
 	user := ValidateAuthentication(r, cache)
 	if user == " " {
 		header = headerUnauthorizedTemplate
@@ -44,11 +43,10 @@ func ShowHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo
 		header = headerAuthorizedTemplate
 	}
 
-	t, err := template.ParseFiles(showTemplate, headerUnauthorizedTemplate, footerTemplate)
+	t, err := template.ParseFiles(showTemplate, header, footerTemplate)
 	if err != nil {
 		panic(err)
 	}
-
 
 	id := r.FormValue("id")
 	productDocument := documents.ProductDocument{}
@@ -60,10 +58,15 @@ func ShowHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo
 		return
 	}
 
+	ownsProduct := false
+	if user == productDocument.Owner {
+		ownsProduct = true
+	}
+
 	product := documents.TemplateProductDocument{productDocument.Id, productDocument.Title,
 		productDocument.Price, productDocument.Owner, productDocument.Type,
-		productDocument.CreatedAt.Format("01-02-2006 15:04:05"),
-		productDocument.UpdatedAt.Format("01-02-2006 15:04:05"), " "}
+		productDocument.CreatedAt.Format("01.02.2006"),
+		productDocument.UpdatedAt.Format("01.02.2006"), " ", ownsProduct}
 
 	fmt.Println("showing product: ", product)
 
@@ -92,10 +95,15 @@ func EditHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo
 		http.Redirect(w, r, "/", 302)
 	}
 
+	ownsProduct := false
+	if user == productDocument.Owner {
+		ownsProduct = true
+	}
+
 	product := documents.TemplateProductDocument{productDocument.Id, productDocument.Title,
 		productDocument.Price, productDocument.Owner, productDocument.Type,
-		productDocument.CreatedAt.Format("01-02-2006 15:04"),
-		productDocument.UpdatedAt.Format("01-02-2006 15:04"), " "}
+		productDocument.CreatedAt.Format("01.02.2006"),
+		productDocument.UpdatedAt.Format("01.02.2006"), " ", ownsProduct}
 
 	getQuery := r.URL.Query()["message"]
 	if len(getQuery) > 0 {

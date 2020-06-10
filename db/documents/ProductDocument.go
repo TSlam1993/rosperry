@@ -23,4 +23,5 @@ type TemplateProductDocument struct {
 	CreatedAt string
 	UpdatedAt string
 	Message string
+	IsCurrentUserOwner bool
 }

@@ -4,7 +4,7 @@ body {
 }
 
 .product-wrapper {
-    padding: 10px;
+    padding: 10px 10px 50px;
     border: solid;
     text-align: center;
     min-height: 230px;;
@@ -12,6 +12,37 @@ body {
 
 .product {
     margin-top: 30px;
+    position: relative;
+}
+
+.published {
+    text-align: left;
+    position: relative;
+    bottom: -50px;
+    font-size: 14px;
+}
+
+.show-product-title {
+    clear: both;
+}
+
+.show-edit-button {
+    text-align: right;
+    position: relative;
+    float: right;
+    font-size: 1.3rem;
+    top: -30px;
+    right: 5px;
+}
+
+.show-delete-button {
+    text-align: right;
+    position: relative;
+    float: right;
+    bottom: -50px;
+    right: 5px;
+    font-size: 1.3rem;
+    z-index: 1;
 }
 
 .grid {
