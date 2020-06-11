@@ -10,6 +10,7 @@ import (
 	"github.com/gomodule/redigo/redis"
 	"github.com/satori/go.uuid"
 	"gopkg.in/mgo.v2"
+	"go.mongodb.org/mongo-driver/bson"
 
 	"rosperry/db/documents"
 )
@@ -74,36 +75,29 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.
 	email := r.FormValue("email")
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), hashCost)
+	dt := time.Now()
+	existingUsers := []documents.UserDocument{}
+	userDocument := documents.UserDocument{username, email, hashedPassword,
+		"", 0, "", dt, dt, dt}
 
-	userDocument := documents.UserDocument{username, email, hashedPassword}
-	err = usersCollection.FindId(username).One(&userDocument)
-	if err != nil {
-		userDocuments := []documents.UserDocument{}
-		usersCollection.Find(nil).All(&userDocuments)
+	err = usersCollection.Find(bson.M{"_email": email}).All(&existingUsers)
 
-		for _, doc := range userDocuments {
-			if doc.Email == email {
-				http.Redirect(w, r, "/register?message=emailalreadyexists", 302)
-				return
-			}
-		}
-
-		err := usersCollection.Insert(userDocument)
+	if len(existingUsers) == 0 {
+		err = usersCollection.Insert(userDocument)
 		if err != nil {
 			panic(err)
 		}
 
 		http.Redirect(w, r, "/login?message=registersuccess", 302)
 		return
+	} else {
+		http.Redirect(w, r, "/register?message=emailalreadyexists", 302)
 	}
-
-	http.Redirect(w, r, "/register?message=namealreadyexists", 302)
 }
 
 func SignInHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Collection, cache redis.Conn) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
-	fmt.Println(password)
 
 	userDocument := documents.UserDocument{}
 	err := usersCollection.FindId(username).One(&userDocument)
@@ -165,7 +159,7 @@ func SignOutHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 
 	c, err := r.Cookie("refresh_token")
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("refresh token cookie error: ", err)
 	}
 	refreshToken := c.Value
 
@@ -176,7 +170,7 @@ func SignOutHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 	if refreshTokenUsername != nil {
 		_, err = cache.Do("DEL", refreshToken)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("refresh token username error: ", err)
 		}
 	}
 
@@ -194,7 +188,7 @@ func SignOutHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 
 	authTokenUsername, err := cache.Do("GET", authToken)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("auth token caceh error: ", err)
 	}
 	if authTokenUsername != nil {
 		_, err = cache.Do("DEL", authToken)
@@ -240,7 +234,6 @@ func WelcomeHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 func RefreshHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 	c, err := r.Cookie("username")
 	if err != nil {
-		fmt.Println(err)
 		if err == http.ErrNoCookie {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
@@ -254,7 +247,6 @@ func RefreshHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 
 	c, err = r.Cookie("refresh_token")
 	if err != nil {
-		fmt.Println(err)
 		if err == http.ErrNoCookie {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
@@ -266,7 +258,7 @@ func RefreshHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 
 	refreshTokenUsername, err := cache.Do("GET", refreshToken)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("refreshing tokens: error getting refresh token cache: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -282,7 +274,7 @@ func RefreshHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 
 	_, err = cache.Do("SETEX", newAuthToken, "120", cookieUsername)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("refreshing tokes: error setting new token in cache: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

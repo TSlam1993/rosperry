@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"rosperry/handlers"
-	//"rosperry/utils"
+	"rosperry/utils"
 
 	"gopkg.in/mgo.v2"
 	"github.com/gomodule/redigo/redis"
@@ -29,8 +29,8 @@ func main() {
 	usersCollection = session.DB("test").C("users")
 
 	//utils.PrintProductCollection(productsCollection)
-	//utils.PrintUserCollection(usersCollection)
-	//utils.DropCollection(productsCollection)
+	utils.PrintUserCollection(usersCollection)
+	//utils.DropCollection(usersCollection)
 
 	assetsHandle := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/")))
 

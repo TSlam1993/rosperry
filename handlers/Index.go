@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fmt"
+	//"fmt"
 	"net/http"
 	"html/template"
 
@@ -28,7 +28,6 @@ func IndexHandler(w http.ResponseWriter, r *http.Request, productsCollection *mg
 
 	productDocuments := []documents.ProductDocument{}
 	productsCollection.Find(nil).All(&productDocuments)
-	fmt.Println(productDocuments)
 
 	products := []documents.TemplateProductDocument{}
 	ownsProduct := false
@@ -51,7 +50,6 @@ func IndexHandler(w http.ResponseWriter, r *http.Request, productsCollection *mg
 	} else {
 		headerTemplate = headerUnauthorizedTemplate
 	}
-	fmt.Println(headerTemplate)
 
 	t, err := template.ParseFiles(indexTemplate, headerTemplate, footerTemplate)
 	if err != nil {
