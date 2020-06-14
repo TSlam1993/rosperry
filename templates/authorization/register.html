@@ -29,6 +29,14 @@
             <label>Password</label>
             <input type="password" class="form-control" id="password" name="password" required/>
         </div>
+        <div class="form-group">
+            <label>Business Name</label>
+            <input type="text" class="form-control" id="businessName" name="businessName" value="{{.BusinessName}}" required/>
+        </div>
+        <div class="form-group">
+            <label>Age of Your Business</label>
+            <input type="number" class="form-control" id="ageOfBusiness" name="ageOfBusiness" value="{{.AgeOfBusiness}}" required/>
+        </div>
         <button type="submit" class="form-button mborder float-left">Submit</button>
 
         <div class="form-switch float-right clear mborder">

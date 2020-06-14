@@ -26,4 +26,6 @@ type TemplateUserDocument struct {
 	CreatedAt string
 	UpdatedAt string
 	LastLogged string
+	IsUser bool
+	Message string
 }

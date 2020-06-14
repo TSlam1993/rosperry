@@ -5,12 +5,11 @@ import (
 	"net/http"
 	"html/template"
 
-	//"rosperry/models"
 	"rosperry/db/documents"
+	//"rosperry/utils"
 
 	"gopkg.in/mgo.v2"
 	"github.com/gomodule/redigo/redis"
-	//"go.mongodb.org/mongo-driver/bson"
 )
 
 const headerAuthorizedTemplate = "templates/landing/header_authorized.html"
@@ -21,10 +20,19 @@ const registerTemplate = "templates/authorization/register.html"
 const addTemplate = "templates/product/add.html"
 const showTemplate = "templates/product/show.html"
 const indexTemplate = "templates/landing/index_authorized.html"
+const usersTemplate = "templates/user/users.html"
+const userTemplate = "templates/user/user.html"
 
 func IndexHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
 	RefreshHandler(w, r, cache)
 	user := ValidateAuthentication(r, cache)
+
+	var headerTemplate string
+	if user != " " {
+		headerTemplate = headerAuthorizedTemplate
+	} else {
+		headerTemplate = headerUnauthorizedTemplate
+	}
 
 	productDocuments := []documents.ProductDocument{}
 	productsCollection.Find(nil).All(&productDocuments)
@@ -41,14 +49,6 @@ func IndexHandler(w http.ResponseWriter, r *http.Request, productsCollection *mg
 			prod.CreatedAt.Format("01.02.2006"),
 			prod.UpdatedAt.Format("01.02.2006"), "", ownsProduct}
 		products = append(products, product)
-	}
-
-
-	var headerTemplate string
-	if user != " " {
-		headerTemplate = headerAuthorizedTemplate
-	} else {
-		headerTemplate = headerUnauthorizedTemplate
 	}
 
 	t, err := template.ParseFiles(indexTemplate, headerTemplate, footerTemplate)

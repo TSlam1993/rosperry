@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"rosperry/handlers"
-	"rosperry/utils"
+	//"rosperry/utils"
 
 	"gopkg.in/mgo.v2"
 	"github.com/gomodule/redigo/redis"
@@ -29,7 +29,7 @@ func main() {
 	usersCollection = session.DB("test").C("users")
 
 	//utils.PrintProductCollection(productsCollection)
-	utils.PrintUserCollection(usersCollection)
+	//utils.PrintUserCollection(usersCollection)
 	//utils.DropCollection(usersCollection)
 
 	assetsHandle := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/")))
@@ -37,6 +37,15 @@ func main() {
 	http.Handle("/assets/", assetsHandle)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
 		handlers.IndexHandler(w, r, productsCollection, cache)
+	})
+	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request){
+		handlers.UsersHandler(w, r, usersCollection, cache)
+	})
+	http.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request){
+		handlers.UserHandler(w, r, usersCollection, cache)
+	})
+	http.HandleFunc("/userPage", func(w http.ResponseWriter, r *http.Request){
+		handlers.UserPageHandler(w, r, usersCollection, cache)
 	})
 	http.HandleFunc("/add", func(w http.ResponseWriter, r *http.Request) {
 		handlers.AddHandler(w, r, cache)

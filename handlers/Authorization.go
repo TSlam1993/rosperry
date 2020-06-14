@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"html/template"
+	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
 	"github.com/gomodule/redigo/redis"
@@ -13,13 +14,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 
 	"rosperry/db/documents"
+	"rosperry/utils"
 )
-
-type signParams struct {
-	Message string
-	Username string
-	Email string
-}
 
 const hashCost = 8
 
@@ -35,15 +31,15 @@ func LoginFormHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) 
 		panic(err)
 	}
 
-	params := signParams{}
+	userTemplateDocument := documents.TemplateUserDocument{}
 
 	getQuery := r.URL.Query()["message"]
 	if len(getQuery) > 0 {
 		message := getQuery[0]
-		params = signParams{Message:message}
+		userTemplateDocument.Message = message
 	}
 
-	t.ExecuteTemplate(w, "login", params)
+	t.ExecuteTemplate(w, "login", userTemplateDocument)
 }
 
 func RegisterFormHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
@@ -58,27 +54,36 @@ func RegisterFormHandler(w http.ResponseWriter, r *http.Request, cache redis.Con
 		panic(err)
 	}
 
-	params := signParams{}
+	userTemplateDocument := documents.TemplateUserDocument{}
 
 	getQuery := r.URL.Query()["message"]
 	if len(getQuery) > 0 {
 		message := getQuery[0]
-		params = signParams{Message:message}
+		userTemplateDocument.Message = message
 	}
 
-	t.ExecuteTemplate(w, "register", params)
+	t.ExecuteTemplate(w, "register", userTemplateDocument)
 }
 
 func SignUpHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Collection) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	email := r.FormValue("email")
+	businessName := r.FormValue("businessName")
+	ageOfBusiness, _ := strconv.ParseInt(r.FormValue("ageOfBusiness"), 0, 64)
+
+	ip := utils.GetIp(r)
+	location := utils.GetLocation(ip)
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), hashCost)
 	dt := time.Now()
+
 	existingUsers := []documents.UserDocument{}
-	userDocument := documents.UserDocument{username, email, hashedPassword,
-		"", 0, "", dt, dt, dt}
+	userDocument := documents.UserDocument{
+		username, email, hashedPassword,
+		businessName, ageOfBusiness,
+		location, dt, dt, dt,
+	}
 
 	err = usersCollection.Find(bson.M{"_email": email}).All(&existingUsers)
 

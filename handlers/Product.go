@@ -63,12 +63,13 @@ func ShowHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo
 		ownsProduct = true
 	}
 
-	product := documents.TemplateProductDocument{productDocument.Id, productDocument.Title,
+	product := documents.TemplateProductDocument{
+		productDocument.Id, productDocument.Title,
 		productDocument.Price, productDocument.Owner, productDocument.Type,
 		productDocument.CreatedAt.Format("01.02.2006"),
-		productDocument.UpdatedAt.Format("01.02.2006"), " ", ownsProduct}
-
-	fmt.Println("showing product: ", product)
+		productDocument.UpdatedAt.Format("01.02.2006"),
+		" ", ownsProduct,
+	}
 
 	t.ExecuteTemplate(w, "show", product)
 }
@@ -100,18 +101,19 @@ func EditHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo
 		ownsProduct = true
 	}
 
-	product := documents.TemplateProductDocument{productDocument.Id, productDocument.Title,
+	product := documents.TemplateProductDocument{
+		productDocument.Id, productDocument.Title,
 		productDocument.Price, productDocument.Owner, productDocument.Type,
 		productDocument.CreatedAt.Format("01.02.2006"),
-		productDocument.UpdatedAt.Format("01.02.2006"), " ", ownsProduct}
+		productDocument.UpdatedAt.Format("01.02.2006"),
+		" ", ownsProduct,
+	}
 
 	getQuery := r.URL.Query()["message"]
 	if len(getQuery) > 0 {
 		message := getQuery[0]
 		product.Message = message
 	}
-
-	fmt.Println("editing product: ", productDocument)
 
 	t.ExecuteTemplate(w, "add", product)
 }
@@ -173,12 +175,10 @@ func SaveProductHandler(w http.ResponseWriter, r *http.Request, productsCollecti
 			for _, doc := range existingProducts {
 				fmt.Println(doc.Owner, fmt.Sprintf("%s", owner), doc.Owner == fmt.Sprintf("%s", owner))
 				if doc.Owner == fmt.Sprintf("%s", owner) {
-					fmt.Println("now redirecting")
 					http.Redirect(w, r, "/add?message=namealreadyexists", 302)
 					return
 				}
 			}
-			fmt.Println("now inserting product: ", productDocument)
 			err := productsCollection.Insert(productDocument)
 			if err != nil {
 				panic(err)

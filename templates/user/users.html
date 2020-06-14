@@ -1,0 +1,23 @@
+{{ define "users" }}
+
+{{ template "header" }}
+
+<div class="grid">
+    {{ range $key, $value := . }}
+    <div class="product-wrapper user-wrapper">
+        <div class="product">
+            <h1 class="show-product-title"><a href="/user?username={{ $value.Username }}">{{ $value.Username }}</a></h1>
+            <h2> Brand: {{ $value.BusinessName }}</h2>
+            <h2> {{ $value.AgeOfBusiness }} years in business</h2>
+            <h2> Country: {{ $value.Location }} </h2>
+            <h2> Contact: {{ $value.Email }} </h2>
+            <p class="published created-account align-center"> Created Account: {{ $value.CreatedAt}} </p>
+            <p class="published align-center"> Last logged at: {{ $value.LastLogged}} </p>
+        </div>
+    </div>
+    {{ end }}
+</div>
+
+{{ template "footer" }}
+
+{{ end }}

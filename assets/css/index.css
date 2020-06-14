@@ -4,10 +4,20 @@ body {
 }
 
 .product-wrapper {
-    padding: 10px 10px 50px;
+    padding: 10px 20px 50px;
     border: solid;
     text-align: center;
     min-height: 230px;;
+}
+
+.user-wrapper {
+    padding: 10px 50px 50px;
+}
+
+.browse-businesses {
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
 }
 
 .product {
@@ -22,8 +32,17 @@ body {
     font-size: 14px;
 }
 
+.align-center {
+    text-align: center;
+}
+
+.created-account {
+    margin-bottom: 0;
+}
+
 .show-product-title {
     clear: both;
+    margin-bottom: 30px;
 }
 
 .show-edit-button {
@@ -127,7 +146,7 @@ body {
 
 @media (min-width: 1630px) {
     .product-wrapper {
-        max-width: 500px;
+        max-width: 900px;
         margin: auto;
         min-width: 500px
     }
