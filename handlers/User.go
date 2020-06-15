@@ -63,6 +63,9 @@ func UserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Co
 	}
 
 	username := r.FormValue("username")
+	if username == "#" {
+		username = user
+	}
 	userDocument := documents.UserDocument{}
 
 	err = usersCollection.FindId(username).One(&userDocument)
@@ -89,7 +92,37 @@ func UserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Co
 	t.ExecuteTemplate(w, "user", userTemplateData)
 }
 
-func UserPageHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Collection, cache redis.Conn) {
+func CabinetHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
 	// TO DO: set current username in formvalue
-	UserHandler(w, r, usersCollection, cache)
+	RefreshHandler(w, r, cache)
+	user := ValidateAuthentication(r, cache)
+
+	productDocuments := []documents.ProductDocument{}
+	productsCollection.Find(nil).All(&productDocuments)
+
+	products := []documents.TemplateProductDocument{}
+	ownsProduct := false
+	for _, prod := range productDocuments {
+		ownsProduct = false
+		if user == prod.Owner {
+			ownsProduct = true
+		}
+
+		product := documents.TemplateProductDocument{prod.Id, prod.Title, prod.Price,
+			prod.Owner, prod.Type,
+			prod.CreatedAt.Format("01.02.2006"),
+			prod.UpdatedAt.Format("01.02.2006"), "", ownsProduct}
+
+		fmt.Println("checking: ", user, prod.Owner, ownsProduct)
+		if ownsProduct {
+			products = append(products, product)
+		}
+	}
+
+	t, err := template.ParseFiles(indexTemplate, headerAuthorizedTemplate, footerTemplate)
+	if err != nil {
+		panic(err)
+	}
+
+	t.ExecuteTemplate(w, "index", products)
 }

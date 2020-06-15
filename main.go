@@ -38,14 +38,14 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
 		handlers.IndexHandler(w, r, productsCollection, cache)
 	})
-	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request){
+	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
 		handlers.UsersHandler(w, r, usersCollection, cache)
 	})
-	http.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request){
+	http.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
 		handlers.UserHandler(w, r, usersCollection, cache)
 	})
-	http.HandleFunc("/userPage", func(w http.ResponseWriter, r *http.Request){
-		handlers.UserPageHandler(w, r, usersCollection, cache)
+	http.HandleFunc("/cabinet", func(w http.ResponseWriter, r *http.Request) {
+		handlers.CabinetHandler(w, r, productsCollection, cache)
 	})
 	http.HandleFunc("/add", func(w http.ResponseWriter, r *http.Request) {
 		handlers.AddHandler(w, r, cache)
@@ -59,7 +59,7 @@ func main() {
 	http.HandleFunc("/saveProduct", func(w http.ResponseWriter, r *http.Request) {
 		handlers.SaveProductHandler(w, r, productsCollection, cache)
 	})
-	http.HandleFunc("/delete", func(w http.ResponseWriter, r *http.Request){
+	http.HandleFunc("/delete", func(w http.ResponseWriter, r *http.Request) {
 		handlers.DeleteHandler(w, r, productsCollection, cache)
 	})
 	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
@@ -74,13 +74,13 @@ func main() {
 	http.HandleFunc("/signin", func(w http.ResponseWriter, r *http.Request) {
 		handlers.SignInHandler(w, r, usersCollection, cache)
 	})
-	http.HandleFunc("/signout", func(w http.ResponseWriter, r *http.Request){
+	http.HandleFunc("/signout", func(w http.ResponseWriter, r *http.Request) {
 		handlers.SignOutHandler(w, r, cache)
 	})
-	http.HandleFunc("/welcome", func(w http.ResponseWriter, r *http.Request){
+	http.HandleFunc("/welcome", func(w http.ResponseWriter, r *http.Request) {
 		handlers.WelcomeHandler(w, r, cache)
 	})
-	http.HandleFunc("/refresh", func(w http.ResponseWriter, r *http.Request){
+	http.HandleFunc("/refresh", func(w http.ResponseWriter, r *http.Request) {
 		handlers.RefreshHandler(w, r, cache)
 	})
 
