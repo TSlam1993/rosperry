@@ -22,13 +22,6 @@ func UsersHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.C
 	userDocuments := []documents.UserDocument{}
 	usersCollection.Find(nil).All(&userDocuments)
 
-	var headerTemplate string
-	if user != " " {
-		headerTemplate = headerAuthorizedTemplate
-	} else {
-		headerTemplate = headerUnauthorizedTemplate
-	}
-
 	usersTemplateData := []documents.TemplateUserDocument{}
 	isUser := false
 	for _, doc := range userDocuments {
@@ -46,7 +39,7 @@ func UsersHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.C
 		usersTemplateData = append(usersTemplateData, user)
 	}
 
-	t, err := template.ParseFiles(usersTemplate, headerTemplate, footerTemplate)
+	t, err := template.ParseFiles(usersTemplate, headerAuthorizedTemplate, footerTemplate)
 	if err != nil {
 		panic(err)
 	}
@@ -56,7 +49,7 @@ func UsersHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.C
 
 func ShowUserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Collection, cache redis.Conn) {
 	user := ValidateAuthentication(r, cache)
-	t, err := template.ParseFiles(showUserTemplate, headerCabinetTemplate, footerTemplate)
+	t, err := template.ParseFiles(showUserTemplate, headerAuthorizedTemplate, footerTemplate)
 	if err != nil {
 		panic(err)
 	}
@@ -93,7 +86,7 @@ func ShowUserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mg
 
 func EditUserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Collection, cache redis.Conn) {
 	user := ValidateAuthentication(r, cache)
-	t, err := template.ParseFiles(showUserTemplate, headerCabinetTemplate, footerTemplate)
+	t, err := template.ParseFiles(showUserTemplate, headerAuthorizedTemplate, footerTemplate)
 	if err != nil {
 		panic(err)
 	}
@@ -188,7 +181,7 @@ func UserCabinetHandler(w http.ResponseWriter, r *http.Request, productsCollecti
 		}
 	}
 
-	t, err := template.ParseFiles(indexTemplate, headerCabinetTemplate, footerTemplate)
+	t, err := template.ParseFiles(indexTemplate, headerAuthorizedTemplate, footerTemplate)
 	if err != nil {
 		panic(err)
 	}

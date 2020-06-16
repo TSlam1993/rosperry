@@ -4,7 +4,7 @@
 
 <div class="add-form-wrapper grid grid-form">
     <div class="hide"></div>
-    <form role="form" method="POST" action="/saveProduct">
+    <form role="form" method="POST" action="/product/save">
         <h2 class="form-title"> Adding Product </h2>
 
         {{ if eq (.Message) ("alreadyexists") }}
@@ -33,7 +33,7 @@
         </div>
         <button type="submit" class="form-button mborder">Submit</button>
         {{ if .Id }}
-        <a class="form-delete-button form-button" href="/delete?id={{.Id}}" class="form-button mborder">Delete</a>
+        <a class="form-delete-button form-button" href="product/delete?id={{.Id}}" class="form-button mborder">Delete</a>
         {{ end }}
     </form>
 </div>
