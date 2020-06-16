@@ -1,14 +1,19 @@
 package handlers
 
 import (
+	"time"
 	"fmt"
+	"strconv"
 	"net/http"
 	"html/template"
 
-	"rosperry/db/documents"
-
 	"gopkg.in/mgo.v2"
+	"golang.org/x/crypto/bcrypt"
+	"go.mongodb.org/mongo-driver/bson"
 	"github.com/gomodule/redigo/redis"
+
+	"rosperry/db/documents"
+	"rosperry/utils"
 )
 
 func UsersHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Collection, cache redis.Conn) {
@@ -49,15 +54,9 @@ func UsersHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.C
 	t.ExecuteTemplate(w, "users", usersTemplateData)
 }
 
-func UserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Collection, cache redis.Conn) {
+func ShowUserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Collection, cache redis.Conn) {
 	user := ValidateAuthentication(r, cache)
-	if user == " " {
-		header = headerUnauthorizedTemplate
-	} else {
-		header = headerAuthorizedTemplate
-	}
-
-	t, err := template.ParseFiles(userTemplate, header, footerTemplate)
+	t, err := template.ParseFiles(showUserTemplate, headerCabinetTemplate, footerTemplate)
 	if err != nil {
 		panic(err)
 	}
@@ -89,10 +88,82 @@ func UserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Co
 		userDocument.LastLogged.Format("01.02.2006"), isUser, "",
 	}
 
-	t.ExecuteTemplate(w, "user", userTemplateData)
+	t.ExecuteTemplate(w, "showUser", userTemplateData)
 }
 
-func CabinetHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
+func EditUserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Collection, cache redis.Conn) {
+	user := ValidateAuthentication(r, cache)
+	t, err := template.ParseFiles(showUserTemplate, headerCabinetTemplate, footerTemplate)
+	if err != nil {
+		panic(err)
+	}
+
+	username := r.FormValue("username")
+	if username == "#" {
+		username = user
+	}
+	userDocument := documents.UserDocument{}
+
+	err = usersCollection.FindId(username).One(&userDocument)
+	if err != nil {
+		fmt.Println("error", err)
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+
+	isUser := false
+	if user == userDocument.Username {
+		isUser = true
+	}
+
+	userTemplateData := documents.TemplateUserDocument{
+		userDocument.Username, userDocument.Email,
+		userDocument.Password, userDocument.BusinessName,
+		userDocument.AgeOfBusiness, userDocument.Location,
+		userDocument.CreatedAt.Format("01.02.2006"),
+		userDocument.UpdatedAt.Format("01.02.2006"),
+		userDocument.LastLogged.Format("01.02.2006"), isUser, "",
+	}
+
+	t.ExecuteTemplate(w, "editUser", userTemplateData)
+}
+
+func SaveUserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Collection, cache redis.Conn) {
+	username := r.FormValue("username")
+	password := r.FormValue("password")
+	email := r.FormValue("email")
+	businessName := r.FormValue("businessName")
+	ageOfBusiness, _ := strconv.ParseInt(r.FormValue("ageOfBusiness"), 0, 64)
+
+	ip := utils.GetIp(r)
+	location := utils.GetLocation(ip)
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), hashCost)
+	dt := time.Now()
+
+	existingUsers := []documents.UserDocument{}
+	userDocument := documents.UserDocument{
+		username, email, hashedPassword,
+		businessName, ageOfBusiness,
+		location, dt, dt, dt,
+	}
+
+	err = usersCollection.Find(bson.M{"_email": email}).All(&existingUsers)
+
+	if len(existingUsers) == 0 {
+		err = usersCollection.Insert(userDocument)
+		if err != nil {
+			panic(err)
+		}
+
+		http.Redirect(w, r, "/login?message=registersuccess", 302)
+		return
+	} else {
+		http.Redirect(w, r, "/register?message=emailalreadyexists", 302)
+	}
+}
+
+func UserCabinetHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
 	// TO DO: set current username in formvalue
 	RefreshHandler(w, r, cache)
 	user := ValidateAuthentication(r, cache)
@@ -112,14 +183,12 @@ func CabinetHandler(w http.ResponseWriter, r *http.Request, productsCollection *
 			prod.Owner, prod.Type,
 			prod.CreatedAt.Format("01.02.2006"),
 			prod.UpdatedAt.Format("01.02.2006"), "", ownsProduct}
-
-		fmt.Println("checking: ", user, prod.Owner, ownsProduct)
 		if ownsProduct {
 			products = append(products, product)
 		}
 	}
 
-	t, err := template.ParseFiles(indexTemplate, headerAuthorizedTemplate, footerTemplate)
+	t, err := template.ParseFiles(indexTemplate, headerCabinetTemplate, footerTemplate)
 	if err != nil {
 		panic(err)
 	}

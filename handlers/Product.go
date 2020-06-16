@@ -18,24 +18,24 @@ import (
 
 var header string
 
-func AddHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
+func AddProductHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 	user := ValidateAuthentication(r, cache)
 	if user == " " {
 		http.Redirect(w, r, "/", 302)
 		return
 	}
 
-	t, err := template.ParseFiles("templates/product/add.html", headerAuthorizedTemplate, footerTemplate)
+	t, err := template.ParseFiles(addProductTemplate, headerAuthorizedTemplate, footerTemplate)
 	if err != nil {
 		panic(err)
 	}
 
 	product := documents.TemplateProductDocument{}
 
-	t.ExecuteTemplate(w, "add", product)
+	t.ExecuteTemplate(w, "addProduct", product)
 }
 
-func ShowHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
+func ShowProductHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
 	user := ValidateAuthentication(r, cache)
 	if user == " " {
 		header = headerUnauthorizedTemplate
@@ -43,7 +43,7 @@ func ShowHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo
 		header = headerAuthorizedTemplate
 	}
 
-	t, err := template.ParseFiles(showTemplate, header, footerTemplate)
+	t, err := template.ParseFiles(showProductTemplate, header, footerTemplate)
 	if err != nil {
 		panic(err)
 	}
@@ -71,17 +71,17 @@ func ShowHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo
 		" ", ownsProduct,
 	}
 
-	t.ExecuteTemplate(w, "show", product)
+	t.ExecuteTemplate(w, "showProduct", product)
 }
 
-func EditHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
+func EditProductHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
 	user := ValidateAuthentication(r, cache)
 	if user == " " {
 		http.Redirect(w, r, "/", 302)
 		return
 	}
 
-	t, err := template.ParseFiles(addTemplate, headerAuthorizedTemplate, footerTemplate)
+	t, err := template.ParseFiles(addProductTemplate, headerAuthorizedTemplate, footerTemplate)
 	if err != nil {
 		fmt.Println(w, err.Error())
 		return
@@ -115,7 +115,7 @@ func EditHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo
 		product.Message = message
 	}
 
-	t.ExecuteTemplate(w, "add", product)
+	t.ExecuteTemplate(w, "addProduct", product)
 }
 
 func SaveProductHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
@@ -148,7 +148,6 @@ func SaveProductHandler(w http.ResponseWriter, r *http.Request, productsCollecti
 			panic(err)
 		}
 		productDocument.CreatedAt = existingProduct.CreatedAt
-		fmt.Println("now updating product: ", productDocument)
 
 		err = productsCollection.UpdateId(id, productDocument)
 		if err != nil {
@@ -189,7 +188,7 @@ func SaveProductHandler(w http.ResponseWriter, r *http.Request, productsCollecti
 	http.Redirect(w, r, "/", 302)
 }
 
-func DeleteHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
+func DeleteProductHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
 	user := ValidateAuthentication(r, cache)
 	if user == " " {
 		http.Redirect(w, r, "/", 302)

@@ -1,15 +1,22 @@
-{{ define "user" }}
+{{ define "showUser" }}
 
 {{ template "header" }}
 
 <div class="grid">
     <div class="product-wrapper user-wrapper">
         <div class="product">
+            {{ if .IsUser }}
+                <a class="show-edit-button" href="/user/edit?id={{.Username}}"> Edit </a>
+            {{ end }}
             <h1 class="show-product-title">{{ .Username }}</h1>
             <h2> Brand: {{ .BusinessName }}</h2>
             <h2> {{ .AgeOfBusiness }} years</h2>
             <h2> {{ .Location }} </h2>
             <h2> contact: {{ .Email }} </h2>
+            {{ if .IsUser }}
+                <a class="show-delete-button" href="/user/delete?id={{.Username}}"
+                   onclick="return confirm('Are you sure you want to delete your business account?');"> Delete Account</a>
+            {{ end }}
             <h2 class="published created-account align-center"> Created Account: {{ .CreatedAt}} </h2>
             <p class="published align-center"> Last logged at: {{ .LastLogged}} </p>
         </div>

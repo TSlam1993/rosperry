@@ -41,26 +41,29 @@ func main() {
 	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
 		handlers.UsersHandler(w, r, usersCollection, cache)
 	})
-	http.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
-		handlers.UserHandler(w, r, usersCollection, cache)
+	http.HandleFunc("/user/show", func(w http.ResponseWriter, r *http.Request) {
+		handlers.ShowUserHandler(w, r, usersCollection, cache)
 	})
-	http.HandleFunc("/cabinet", func(w http.ResponseWriter, r *http.Request) {
-		handlers.CabinetHandler(w, r, productsCollection, cache)
+	http.HandleFunc("/user/edit", func(w http.ResponseWriter, r *http.Request) {
+		handlers.EditUserHandler(w, r, usersCollection, cache)
 	})
-	http.HandleFunc("/add", func(w http.ResponseWriter, r *http.Request) {
-		handlers.AddHandler(w, r, cache)
+	http.HandleFunc("/user/cabinet", func(w http.ResponseWriter, r *http.Request) {
+		handlers.UserCabinetHandler(w, r, productsCollection, cache)
 	})
-	http.HandleFunc("/show", func(w http.ResponseWriter, r *http.Request) {
-		handlers.ShowHandler(w, r, productsCollection, cache)
+	http.HandleFunc("/product/add", func(w http.ResponseWriter, r *http.Request) {
+		handlers.AddProductHandler(w, r, cache)
 	})
-	http.HandleFunc("/edit", func(w http.ResponseWriter, r *http.Request) {
-		handlers.EditHandler(w, r, productsCollection, cache)
+	http.HandleFunc("/product/show", func(w http.ResponseWriter, r *http.Request) {
+		handlers.ShowProductHandler(w, r, productsCollection, cache)
 	})
-	http.HandleFunc("/saveProduct", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/product/edit", func(w http.ResponseWriter, r *http.Request) {
+		handlers.EditProductHandler(w, r, productsCollection, cache)
+	})
+	http.HandleFunc("/product/save", func(w http.ResponseWriter, r *http.Request) {
 		handlers.SaveProductHandler(w, r, productsCollection, cache)
 	})
-	http.HandleFunc("/delete", func(w http.ResponseWriter, r *http.Request) {
-		handlers.DeleteHandler(w, r, productsCollection, cache)
+	http.HandleFunc("/product/delete", func(w http.ResponseWriter, r *http.Request) {
+		handlers.DeleteProductHandler(w, r, productsCollection, cache)
 	})
 	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
 		handlers.RegisterFormHandler(w, r, cache)

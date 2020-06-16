@@ -14,14 +14,16 @@ import (
 
 const headerAuthorizedTemplate = "templates/landing/header_authorized.html"
 const headerUnauthorizedTemplate = "templates/landing/header_unauthorized.html"
+const headerCabinetTemplate = "templates/user/header_cabinet.html"
 const footerTemplate = "templates/landing/footer.html"
 const loginTemplate = "templates/authorization/login.html"
 const registerTemplate = "templates/authorization/register.html"
-const addTemplate = "templates/product/add.html"
-const showTemplate = "templates/product/show.html"
+const addProductTemplate = "templates/product/add.html"
+const showProductTemplate = "templates/product/show.html"
 const indexTemplate = "templates/landing/index_authorized.html"
 const usersTemplate = "templates/user/users.html"
-const userTemplate = "templates/user/user.html"
+const showUserTemplate = "templates/user/show.html"
+const editUserTemplate = "templates/user/edit.html"
 
 func IndexHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
 	RefreshHandler(w, r, cache)

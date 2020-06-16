@@ -6,7 +6,7 @@
     {{ range $key, $value := . }}
     <div class="product-wrapper user-wrapper">
         <div class="product">
-            <h1 class="show-product-title"><a href="/user?username={{ $value.Username }}">{{ $value.Username }}</a></h1>
+            <h1 class="show-product-title"><a href="/user/show?username={{ $value.Username }}">{{ $value.Username }}</a></h1>
             <h2> Brand: {{ $value.BusinessName }}</h2>
             <h2> {{ $value.AgeOfBusiness }} years in business</h2>
             <h2> Country: {{ $value.Location }} </h2>
