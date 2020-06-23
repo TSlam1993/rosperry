@@ -6,14 +6,14 @@
     <div class="product-wrapper">
         <div class="product">
             {{ if .IsCurrentUserOwner }}
-                <a class="show-edit-button" href="/edit?id={{.Id}}"> Edit </a>
+                <a class="show-edit-button" href="/product/edit?id={{.Id}}"> Edit </a>
             {{ end }}
             <h1 class="show-product-title">{{ .Title }}</h1>
             <h2> Brand: {{ .Owner }}</h2>
             <h2> Price: {{ .Price }}$</h2>
             <h2> Type: {{ .Type }} </h2>
             {{ if .IsCurrentUserOwner }}
-                <a class="show-delete-button" href="/delete?id={{.Id}}"
+                <a class="show-delete-button" href="/product/delete?id={{.Id}}"
                    onclick="return confirm('Are you sure you want to remove this product?');"> Delete </a>
             {{ end }}
             <p class="published"> Published: {{ .CreatedAt}} </p>

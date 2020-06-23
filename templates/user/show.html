@@ -6,7 +6,7 @@
     <div class="product-wrapper user-wrapper">
         <div class="product">
             {{ if .IsUser }}
-                <a class="show-edit-button" href="/user/edit?id={{.Username}}"> Edit </a>
+                <a class="show-edit-button" href="/user/edit?username={{.Username}}"> Edit </a>
             {{ end }}
             <h1 class="show-product-title">{{ .Username }}</h1>
             <h2> Brand: {{ .BusinessName }}</h2>

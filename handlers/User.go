@@ -55,7 +55,7 @@ func ShowUserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mg
 	}
 
 	username := r.FormValue("username")
-	if username == "#" {
+	if username == "self" {
 		username = user
 	}
 	userDocument := documents.UserDocument{}
@@ -86,7 +86,7 @@ func ShowUserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mg
 
 func EditUserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Collection, cache redis.Conn) {
 	user := ValidateAuthentication(r, cache)
-	t, err := template.ParseFiles(showUserTemplate, headerAuthorizedTemplate, footerTemplate)
+	t, err := template.ParseFiles(editUserTemplate, headerAuthorizedTemplate, footerTemplate)
 	if err != nil {
 		panic(err)
 	}
@@ -97,6 +97,7 @@ func EditUserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mg
 	}
 	userDocument := documents.UserDocument{}
 
+	fmt.Println("user: ", username)
 	err = usersCollection.FindId(username).One(&userDocument)
 	if err != nil {
 		fmt.Println("error", err)
@@ -157,7 +158,6 @@ func SaveUserHandler(w http.ResponseWriter, r *http.Request, usersCollection *mg
 }
 
 func UserCabinetHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
-	// TO DO: set current username in formvalue
 	RefreshHandler(w, r, cache)
 	user := ValidateAuthentication(r, cache)
 
