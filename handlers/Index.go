@@ -14,7 +14,6 @@ import (
 
 const headerAuthorizedTemplate = "templates/landing/header_authorized.html"
 const headerUnauthorizedTemplate = "templates/landing/header_unauthorized.html"
-const headerCabinetTemplate = "templates/user/header_cabinet.html"
 const footerTemplate = "templates/landing/footer.html"
 const loginTemplate = "templates/authorization/login.html"
 const registerTemplate = "templates/authorization/register.html"
@@ -25,7 +24,7 @@ const usersTemplate = "templates/user/users.html"
 const showUserTemplate = "templates/user/show.html"
 const editUserTemplate = "templates/user/edit.html"
 
-func IndexHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
+func IndexHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, usersCollection *mgo.Collection, cache redis.Conn) {
 	RefreshHandler(w, r, cache)
 	user := ValidateAuthentication(r, cache)
 
@@ -46,8 +45,19 @@ func IndexHandler(w http.ResponseWriter, r *http.Request, productsCollection *mg
 		if user == prod.Owner {
 			ownsProduct = true
 		}
+
+		var businessName string
+		userDocument := documents.UserDocument{}
+		err := usersCollection.FindId(prod.Owner).One(&userDocument)
+
+		if err == nil {
+			businessName = userDocument.BusinessName
+		} else {
+			businessName = prod.Owner
+		}
+
 		product := documents.TemplateProductDocument{prod.Id, prod.Title, prod.Price,
-			prod.Owner, prod.Type,
+			businessName, prod.Type,
 			prod.CreatedAt.Format("01.02.2006"),
 			prod.UpdatedAt.Format("01.02.2006"), "", ownsProduct}
 		products = append(products, product)
@@ -59,4 +69,5 @@ func IndexHandler(w http.ResponseWriter, r *http.Request, productsCollection *mg
 	}
 
 	t.ExecuteTemplate(w, "index", products)
+	return
 }

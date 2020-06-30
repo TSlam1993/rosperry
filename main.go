@@ -36,7 +36,7 @@ func main() {
 
 	http.Handle("/assets/", assetsHandle)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
-		handlers.IndexHandler(w, r, productsCollection, cache)
+		handlers.IndexHandler(w, r, productsCollection, usersCollection, cache)
 	})
 	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
 		handlers.UsersHandler(w, r, usersCollection, cache)
@@ -47,6 +47,9 @@ func main() {
 	http.HandleFunc("/user/edit", func(w http.ResponseWriter, r *http.Request) {
 		handlers.EditUserHandler(w, r, usersCollection, cache)
 	})
+	http.HandleFunc("/user/update", func(w http.ResponseWriter, r *http.Request) {
+		handlers.UpdateUserHandler(w, r, usersCollection, cache)
+	})
 	http.HandleFunc("/user/cabinet", func(w http.ResponseWriter, r *http.Request) {
 		handlers.UserCabinetHandler(w, r, productsCollection, cache)
 	})
@@ -54,7 +57,7 @@ func main() {
 		handlers.AddProductHandler(w, r, cache)
 	})
 	http.HandleFunc("/product/show", func(w http.ResponseWriter, r *http.Request) {
-		handlers.ShowProductHandler(w, r, productsCollection, cache)
+		handlers.ShowProductHandler(w, r, productsCollection, usersCollection, cache)
 	})
 	http.HandleFunc("/product/edit", func(w http.ResponseWriter, r *http.Request) {
 		handlers.EditProductHandler(w, r, productsCollection, cache)

@@ -4,19 +4,28 @@
 
 <div class="add-form-wrapper grid grid-form">
     <div class="hide"></div>
-    <form role="form" method="POST" action="/user/edit">
+    <form role="form" method="POST" action="/user/update">
         <h2 class="form-title"> {{.Username}} </h2>
 
-        {{if eq (.Message) ("namealreadyexists") }}
+        {{if eq (.Message) ("notfound") }}
             <h3 class="form-message form-message-alert">
-                User with this name already exists! You have to choose another name
+                User with this name wasn't found!
+            </h3>
+        {{else if eq (.Message) ("updatesuccess") }}
+            <h3 class="form-message form-message-alert">
+                User was succesfully updated
+            </h3>
+        {{else if eq (.Message) ("incorrectpassword") }}
+            <h3 class="form-message form-message-alert">
+                Incorrect password
             </h3>
         {{else if eq (.Message) ("emailalreadyexists") }}
             <h3 class="form-message form-message-alert">
-                User with this email already exists! You have to choose another email
+                Selected email already belongs to the other user! Please choose another email
             </h3>
         {{end}}
 
+        <input type="hidden" name="username" value="{{.Username}}" />
         <div class="form-group">
             <label>Email</label>
             <input type="email" class="form-control" id="email" name="email" value="{{.Email}}"/>
@@ -28,6 +37,10 @@
         <div class="form-group">
             <label>Age of Your Business</label>
             <input type="number" class="form-control" id="ageOfBusiness" name="ageOfBusiness" value="{{.AgeOfBusiness}}"/>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" id="password" name="password" required/>
         </div>
         <button type="submit" class="form-button mborder float-left">Submit</button>
     </form>

@@ -263,7 +263,6 @@ func RefreshHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 
 	refreshTokenUsername, err := cache.Do("GET", refreshToken)
 	if err != nil {
-		fmt.Println("refreshing tokens: error getting refresh token cache: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -279,7 +278,6 @@ func RefreshHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 
 	_, err = cache.Do("SETEX", newAuthToken, "120", cookieUsername)
 	if err != nil {
-		fmt.Println("refreshing tokes: error setting new token in cache: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -289,6 +287,8 @@ func RefreshHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 		Value: newAuthToken,
 		Expires: time.Now().Add(120 * time.Second),
 	})
+
+	return
 }
 
 func ValidateAuthentication(r *http.Request, cache redis.Conn) string {

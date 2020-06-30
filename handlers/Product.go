@@ -19,6 +19,7 @@ import (
 var header string
 
 func AddProductHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
+	RefreshHandler(w, r, cache)
 	user := ValidateAuthentication(r, cache)
 	if user == " " {
 		http.Redirect(w, r, "/", 302)
@@ -35,7 +36,8 @@ func AddProductHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn)
 	t.ExecuteTemplate(w, "addProduct", product)
 }
 
-func ShowProductHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
+func ShowProductHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, usersCollection *mgo.Collection, cache redis.Conn) {
+	RefreshHandler(w, r, cache)
 	user := ValidateAuthentication(r, cache)
 	if user == " " {
 		header = headerUnauthorizedTemplate
@@ -63,9 +65,19 @@ func ShowProductHandler(w http.ResponseWriter, r *http.Request, productsCollecti
 		ownsProduct = true
 	}
 
+	var businessName string
+	userDocument := documents.UserDocument{}
+
+	err = usersCollection.FindId(productDocument.Owner).One(&userDocument)
+	if err == nil {
+		businessName = userDocument.BusinessName
+	} else {
+		businessName = productDocument.Owner
+	}
+
 	product := documents.TemplateProductDocument{
 		productDocument.Id, productDocument.Title,
-		productDocument.Price, productDocument.Owner, productDocument.Type,
+		productDocument.Price, businessName, productDocument.Type,
 		productDocument.CreatedAt.Format("01.02.2006"),
 		productDocument.UpdatedAt.Format("01.02.2006"),
 		" ", ownsProduct,
@@ -75,6 +87,7 @@ func ShowProductHandler(w http.ResponseWriter, r *http.Request, productsCollecti
 }
 
 func EditProductHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
+	RefreshHandler(w, r, cache)
 	user := ValidateAuthentication(r, cache)
 	if user == " " {
 		http.Redirect(w, r, "/", 302)
@@ -189,6 +202,7 @@ func SaveProductHandler(w http.ResponseWriter, r *http.Request, productsCollecti
 }
 
 func DeleteProductHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
+	RefreshHandler(w, r, cache)
 	user := ValidateAuthentication(r, cache)
 	if user == " " {
 		http.Redirect(w, r, "/", 302)
