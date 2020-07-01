@@ -50,6 +50,9 @@ func main() {
 	http.HandleFunc("/user/update", func(w http.ResponseWriter, r *http.Request) {
 		handlers.UpdateUserHandler(w, r, usersCollection, cache)
 	})
+	http.HandleFunc("/user/updateSearchInfo", func(w http.ResponseWriter, r *http.Request) {
+		handlers.UpdateSearchInfoHandler(w, r, usersCollection, cache)
+	})
 	http.HandleFunc("/user/cabinet", func(w http.ResponseWriter, r *http.Request) {
 		handlers.UserCabinetHandler(w, r, productsCollection, cache)
 	})

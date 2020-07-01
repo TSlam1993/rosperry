@@ -287,14 +287,17 @@ func RefreshHandler(w http.ResponseWriter, r *http.Request, cache redis.Conn) {
 		Value: newAuthToken,
 		Expires: time.Now().Add(120 * time.Second),
 	})
-
-	return
 }
 
 func ValidateAuthentication(r *http.Request, cache redis.Conn) string {
 	c, err := r.Cookie("auth_token")
 	if err != nil {
-		return " "
+		// had to use refresh because even if refreshHandler updated
+		// auth it couldn't be reached until next request
+		c, err = r.Cookie("refresh_token")
+		if err !=nil {
+			return " "
+		}
 	}
 
 	authToken := c.Value

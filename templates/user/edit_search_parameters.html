@@ -1,0 +1,76 @@
+{{ define "editSearchParameters" }}
+
+{{ template "header" }}
+
+<div class="add-form-wrapper grid grid-form">
+    <div class="hide"></div>
+    <form role="form" method="POST" action="/user/updateSearchInfo">
+        <h2 class="form-title"> search info </h2>
+
+        <div class="form-group">
+            <label>I am interested in businesses that exist:</label>
+            <div class="form-checkbox-wrapper">
+                <input type="checkbox" class="form-checkbox" id="AoBInterest1" name="AoBInterest1" value="AoBInterest1" required/>
+                0-3 years
+            </div>
+            <div class="form-checkbox-wrapper">
+                <input type="checkbox" class="form-checkbox" id="AoBInterest2" name="AoBInterest2" value="AoBInterest2" required/>
+                3-10 years
+            </div>
+            <div class="form-checkbox-wrapper">
+                <input type="checkbox" class="form-checkbox" id="AoBInterest3" name="AoBInterest3" value="AoBInterest3" required/>
+                10 and more years
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Show me to businesses that exist:</label>
+            <div class="form-checkbox-wrapper">
+                <input type="checkbox" class="form-checkbox" id="AoBShowMyself1" name="AoBShowMyself1" value="AoBShowMyself1" required/>
+                0-3 years
+            </div>
+            <div class="form-checkbox-wrapper">
+                <input type="checkbox" class="form-checkbox" id="AoBShowMyself2" name="AoBShowMyself2" value="AoBShowMyself2" required/>
+                3-10 years
+            </div>
+            <div class="form-checkbox-wrapper">
+                <input type="checkbox" class="form-checkbox" id="AoBIShowMyself3" name="AoBShowMyself3" value="AoBShowMyself3" required/>
+                10 and more years
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>I am interested in businesses that specialize in:</label>
+            <div class="form-checkbox-wrapper">
+                <input type="checkbox" class="form-checkbox" id="SpecializationInterest1" name="SpecializationInterest1" value="SpecializationInterest1" required/>
+                goods
+            </div>
+            <div class="form-checkbox-wrapper">
+                <input type="checkbox" class="form-checkbox" id="SpecializationInterest2" name="SpecializationInterest2" value="SpecializationInterest2" required/>
+                services
+            </div>
+            <div class="form-checkbox-wrapper">
+                <input type="checkbox" class="form-checkbox" id="SpecializationInterest3" name="SpecializationInterest3" value="SpecializationInterest3" required/>
+                agent work
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Show me to businesses that specialize in:</label>
+            <div class="form-checkbox-wrapper">
+                <input type="checkbox" class="form-checkbox" id="SpecializationShowMyself1" name="SpecializationShowMyself1" value="SpecializationShowMyself1" required/>
+                goods
+            </div>
+            <div class="form-checkbox-wrapper">
+                <input type="checkbox" class="form-checkbox" id="SpecializationShowMyself2" name="SpecializationShowMyself2" value="SpecializationShowMyself2" required/>
+                services
+            </div>
+            <div class="form-checkbox-wrapper">
+                <input type="checkbox" class="form-checkbox" id="SpecializationShowMyself3" name="SpecializationShowMyself3" value="SpecializationShowMyself3" required/>
+                agent work
+            </div>
+        </div>
+    </form>
+</div>
+
+{{end}}

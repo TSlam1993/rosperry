@@ -23,6 +23,7 @@ const indexTemplate = "templates/landing/index_authorized.html"
 const usersTemplate = "templates/user/users.html"
 const showUserTemplate = "templates/user/show.html"
 const editUserTemplate = "templates/user/edit.html"
+const editSearchParametersTemplate = "templates/user/edit_search_parameters.html"
 
 func IndexHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, usersCollection *mgo.Collection, cache redis.Conn) {
 	RefreshHandler(w, r, cache)

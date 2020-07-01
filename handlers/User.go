@@ -191,6 +191,17 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request, usersCollection *
 	}
 }
 
+func UpdateSearchInfoHandler(w http.ResponseWriter, r *http.Request, usersCollection *mgo.Collection, cache redis.Conn) {
+	RefreshHandler(w, r, cache)
+
+	t, err := template.ParseFiles(editSearchParametersTemplate, headerAuthorizedTemplate, footerTemplate)
+	if err != nil {
+		panic(err)
+	}
+
+	t.ExecuteTemplate(w, "editSearchParameters", nil)
+}
+
 func UserCabinetHandler(w http.ResponseWriter, r *http.Request, productsCollection *mgo.Collection, cache redis.Conn) {
 	RefreshHandler(w, r, cache)
 	user := ValidateAuthentication(r, cache)
